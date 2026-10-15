@@ -1,0 +1,8 @@
+{
+  "name": "NEXORA 2026 - National Level Techno-Cultural Fest",
+  "description": "NEXORA 2026: Beyond Limits. A National Level Techno-Cultural Fest at ABC College Campus featuring Hackathons, Technical Competitions, Cultural Nights, Gaming, and Instant Digital Event Passes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
