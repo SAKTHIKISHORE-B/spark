@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bookmark, Menu, X, Ticket, ArrowRight, Shield } from 'lucide-react';
+import { Bookmark, Menu, X, ArrowRight, Phone, Mail, Ticket, Sparkles } from 'lucide-react';
 import { NexoraBrand } from './NexoraLogo';
 
 interface NavbarProps {
@@ -22,9 +22,31 @@ export function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-purple-900/30 bg-[#060814]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full border-b border-[#1b2348] bg-[#050816]/95 backdrop-blur-xl">
+      {/* Top micro hotline strip */}
+      <div className="border-b border-[#131b3b] bg-[#070b1e] px-4 py-1 text-[11px] text-slate-400">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <Phone className="h-3 w-3 text-[#38bdf8]" />
+              <span className="font-mono text-[#7dd3fc] font-semibold">0000000XXX</span>
+            </span>
+            <span className="text-slate-600">|</span>
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <Mail className="h-3 w-3 text-[#38bdf8]" />
+              <span className="font-mono text-[#7dd3fc]">xyz@gmail.com</span>
+            </span>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#a78bfa]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#38bdf8] animate-pulse" />
+            <span>SONA COLLEGE OF TECHNOLOGY · NEXORA 2026</span>
+          </div>
+        </div>
+      </div>
+
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-8">
-        {/* Left: Nexora Geometric Logo & Brand */}
+        {/* Left: Nexora Logo & Brand from Screenshot */}
         <NexoraBrand
           onClick={() => {
             onViewChange('events');
@@ -32,20 +54,20 @@ export function Navbar({
           }}
         />
 
-        {/* Center: Clean Nav Links with active blue indicator line */}
-        <nav className="hidden md:flex items-center gap-7 text-xs font-semibold tracking-wide text-slate-300">
+        {/* Center: Navigation Links matching image (Home, Events, Schedule, Gallery, Contact) */}
+        <nav className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-wide text-slate-300">
           <button
             onClick={() => {
               onViewChange('events');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className={`relative py-1 transition-colors hover:text-white ${
-              currentView === 'events' ? 'text-white' : 'text-slate-400'
+              currentView === 'events' ? 'text-white font-bold' : 'text-slate-400'
             }`}
           >
             <span>Home</span>
             {currentView === 'events' && (
-              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#38bdf8]" />
+              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-[#38bdf8] shadow-[0_0_10px_#38bdf8]" />
             )}
           </button>
 
@@ -63,12 +85,12 @@ export function Navbar({
           <button
             onClick={() => onViewChange('schedule')}
             className={`relative py-1 transition-colors hover:text-white ${
-              currentView === 'schedule' ? 'text-white' : 'text-slate-400'
+              currentView === 'schedule' ? 'text-white font-bold' : 'text-slate-400'
             }`}
           >
             <span>Schedule</span>
             {currentView === 'schedule' && (
-              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#38bdf8]" />
+              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-[#38bdf8] shadow-[0_0_10px_#38bdf8]" />
             )}
           </button>
 
@@ -84,83 +106,94 @@ export function Navbar({
           </button>
 
           <button
+            onClick={() => {
+              const el = document.getElementById('footer-contact-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="py-1 transition-colors text-slate-400 hover:text-white"
+          >
+            Contact
+          </button>
+
+          <button
             onClick={() => onViewChange('my-tickets')}
             className={`relative py-1 transition-colors hover:text-white flex items-center gap-1.5 ${
-              currentView === 'my-tickets' ? 'text-white' : 'text-slate-400'
+              currentView === 'my-tickets' ? 'text-white font-bold' : 'text-slate-400'
             }`}
           >
             <span>My Passes</span>
             {ticketsCount > 0 && (
-              <span className="rounded-full bg-purple-600/60 px-1.5 py-0.2 text-[10px] text-purple-200 border border-purple-400/40">
+              <span className="rounded-full bg-[#7c3aed] px-1.5 py-0.2 text-[10px] text-white font-mono font-bold">
                 {ticketsCount}
               </span>
             )}
             {currentView === 'my-tickets' && (
-              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#38bdf8]" />
+              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-[#38bdf8] shadow-[0_0_10px_#38bdf8]" />
             )}
           </button>
 
           <button
             onClick={() => onViewChange('organizer')}
             className={`relative py-1 transition-colors hover:text-white ${
-              currentView === 'organizer' ? 'text-white' : 'text-slate-400'
+              currentView === 'organizer' ? 'text-white font-bold' : 'text-slate-400'
             }`}
           >
             <span>Organizer</span>
             {currentView === 'organizer' && (
-              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#38bdf8]" />
+              <span className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full bg-[#38bdf8] shadow-[0_0_10px_#38bdf8]" />
             )}
           </button>
         </nav>
 
-        {/* Right: Bookmark Counter & Glowing Purple Pill "Register Now →" Button */}
+        {/* Right: Saved Bookmarks Counter & Royal Purple Register Now Pill Button */}
         <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={onOpenBookmarks}
             aria-label="Saved events"
-            className="flex items-center gap-1.5 rounded-full border border-purple-800/40 bg-purple-950/40 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-purple-900/50 hover:text-white"
+            className="flex items-center gap-1.5 rounded-full border border-[#273260] bg-[#0c1236] px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-[#141d4f] hover:text-white"
             title="Saved Events"
           >
-            <Bookmark className="h-3.5 w-3.5 text-purple-400" />
+            <Bookmark className="h-3.5 w-3.5 text-[#38bdf8]" />
             <span className="hidden sm:inline">Saved</span>
             {bookmarksCount > 0 && (
-              <span className="font-mono text-xs font-bold text-amber-400 tabular-nums">
+              <span className="font-mono text-xs font-bold text-[#7dd3fc] tabular-nums">
                 ({bookmarksCount})
               </span>
             )}
           </button>
 
+          {/* Royal Purple Pill Button from Screenshot: Register Now → */}
           <button
             onClick={onQuickRegister}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2 text-xs font-bold text-white shadow-lg glow-button hover:from-purple-500 hover:to-indigo-500 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] px-6 py-2.5 text-xs font-bold text-white shadow-[0_0_25px_rgba(124,58,237,0.55)] hover:from-[#8b5cf6] hover:to-[#7c3aed] hover:shadow-[0_0_35px_rgba(139,92,246,0.75)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap cursor-pointer"
           >
             <span>Register Now</span>
-            <ArrowRight className="h-3.5 w-3.5" />
+            <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
           </button>
 
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-purple-800/40 bg-slate-900 text-slate-300 md:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#273260] bg-[#0c1236] text-slate-300 md:hidden"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-5 w-5 text-[#38bdf8]" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="border-t border-purple-900/40 bg-[#060814]/98 px-5 py-4 md:hidden">
+        <div className="border-t border-[#1b2348] bg-[#070b1e] px-5 py-4 md:hidden">
           <div className="flex flex-col gap-3 text-sm font-semibold text-slate-300">
             <button
               onClick={() => {
                 onViewChange('events');
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-purple-950/50"
+              className="text-left py-1 hover:text-white"
             >
-              <span>Home</span>
+              Home
             </button>
             <button
               onClick={() => {
@@ -169,18 +202,18 @@ export function Navbar({
                 const el = document.getElementById('featured-events-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-purple-950/50"
+              className="text-left py-1 hover:text-white"
             >
-              <span>Events</span>
+              Events
             </button>
             <button
               onClick={() => {
                 onViewChange('schedule');
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-purple-950/50"
+              className="text-left py-1 hover:text-white"
             >
-              <span>Schedule</span>
+              Schedule
             </button>
             <button
               onClick={() => {
@@ -189,32 +222,27 @@ export function Navbar({
                 const el = document.getElementById('gallery-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-purple-950/50"
+              className="text-left py-1 hover:text-white"
             >
-              <span>Gallery</span>
+              Gallery
             </button>
             <button
               onClick={() => {
                 onViewChange('my-tickets');
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-purple-950/50"
+              className="text-left py-1 hover:text-white"
             >
-              <span>My Passes</span>
-              {ticketsCount > 0 && (
-                <span className="font-mono text-xs text-purple-300">
-                  {ticketsCount} active
-                </span>
-              )}
+              My Passes ({ticketsCount})
             </button>
             <button
               onClick={() => {
                 onViewChange('organizer');
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-purple-950/50"
+              className="text-left py-1 hover:text-white"
             >
-              <span>Organizer Hub</span>
+              Organizer Console
             </button>
           </div>
         </div>

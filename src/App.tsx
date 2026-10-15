@@ -30,7 +30,18 @@ export default function App() {
   const [events, setEvents] = useState<EventItem[]>(() => {
     try {
       const saved = localStorage.getItem('campuspulse_events');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (
+          Array.isArray(parsed) &&
+          parsed.some((e: any) => e.id === 'ev-workshop') &&
+          parsed.some((e: any) => e.id === 'ev-circuit-design') &&
+          parsed.some((e: any) => e.id === 'ev-meme-creation') &&
+          parsed.length >= 13
+        ) {
+          return parsed;
+        }
+      }
     } catch (e) {
       console.error(e);
     }
@@ -87,6 +98,7 @@ export default function App() {
   // Views & Filter states
   const [currentView, setCurrentView] = useState<'events' | 'schedule' | 'my-tickets' | 'organizer'>('events');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTrack, setSelectedTrack] = useState<'all' | 'technical' | 'non-technical'>('all');
   const [selectedCategory, setSelectedCategory] = useState<EventCategory>('all');
   const [filterFormat, setFilterFormat] = useState<'all' | 'solo' | 'team'>('all');
   const [filterFee, setFilterFee] = useState<'all' | 'free' | 'paid'>('all');
@@ -199,6 +211,7 @@ export default function App() {
 
   // Filter events catalog
   const filteredEvents = events.filter((ev) => {
+    if (selectedTrack !== 'all' && ev.track !== selectedTrack) return false;
     if (selectedCategory !== 'all' && ev.category !== selectedCategory) return false;
     if (filterFormat === 'solo' && ev.teamType === 'team') return false;
     if (filterFormat === 'team' && ev.teamType === 'solo') return false;
@@ -223,9 +236,17 @@ export default function App() {
   const bookmarkedEventItems = events.filter((e) => bookmarks.includes(e.id));
   const activeConfirmedTickets = registrations.filter((r) => r.status === 'confirmed');
 
-  // Helper when clicking a featured card from the top 5
+  // Helper when clicking a featured card or view all button
   const handleFeaturedCategorySelect = (category: string) => {
-    setSelectedCategory(category as EventCategory);
+    if (category === 'technical') {
+      setSelectedTrack('technical');
+      setSelectedCategory('all');
+    } else if (category === 'cultural' || category === 'gaming' || category === 'management') {
+      setSelectedTrack('non-technical');
+      setSelectedCategory('all');
+    } else {
+      setSelectedCategory(category as EventCategory);
+    }
     const el = document.getElementById('events-catalog-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
@@ -239,8 +260,17 @@ export default function App() {
     }
   };
 
+  const handleRegisterByTitle = (keyword: string) => {
+    const found = events.find((e) =>
+      e.title.toLowerCase().includes(keyword.toLowerCase())
+    );
+    if (found) {
+      setRegisterEvent(found);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen flex-col bg-[#060814] text-slate-100 selection:bg-purple-600 selection:text-white">
+    <div className="flex min-h-screen flex-col bg-[#050816] text-slate-100 selection:bg-[#7c3aed] selection:text-white">
       {/* Top Bar Navigation */}
       <Navbar
         currentView={currentView}
@@ -275,15 +305,17 @@ export default function App() {
               onSearchChange={setSearchQuery}
             />
 
-            {/* 2. Featured Events 5-Card Glowing Carousel matching user image */}
+            {/* 2. Featured Events: Distinct Technical & Non-Technical Sections */}
             <NexoraFeaturedEvents
               onSelectCategory={handleFeaturedCategorySelect}
               onExploreAll={() => {
                 setSelectedCategory('all');
+                setSelectedTrack('all');
                 const el = document.getElementById('events-catalog-section');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
               onSelectEventByTitle={handleSelectEventByTitle}
+              onRegisterByTitle={handleRegisterByTitle}
             />
 
             {/* 3. Bottom 3-Column: Event Schedule, Why Attend, Gallery matching user image */}
@@ -301,24 +333,24 @@ export default function App() {
             {/* 4. Complete Catalog & Registration Section */}
             <section
               id="events-catalog-section"
-              className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 border-t border-purple-900/20"
+              className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 border-t border-[#1b2348]"
             >
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-purple-900/30 pb-5">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-[#1b2348] pb-5">
                 <div>
-                  <span className="text-[11px] font-bold tracking-[0.25em] text-cyan-400 uppercase">
-                    COMPETITIONS DIRECTORY
+                  <span className="text-[11px] font-bold tracking-[0.25em] text-[#38bdf8] uppercase">
+                    COMPETITIONS & WORKSHOPS DIRECTORY
                   </span>
-                  <h2 className="mt-0.5 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                  <h2 className="mt-0.5 text-2xl font-black tracking-tight text-white sm:text-3xl">
                     All Festival Competitions & Tracks
                   </h2>
                 </div>
 
-                {/* Sub-Filters: Team format & Fee */}
+                {/* Sub-Filters: Team format & Fee in Midnight Navy panels */}
                 <div className="flex items-center gap-3">
                   <select
                     value={filterFormat}
                     onChange={(e) => setFilterFormat(e.target.value as any)}
-                    className="rounded-lg border border-purple-500/30 bg-[#0c102a] px-3 py-1.5 text-xs text-slate-200 focus:border-cyan-400 focus:outline-none"
+                    className="rounded-full border border-[#273260] bg-[#0c1236] px-3.5 py-1.5 text-xs text-slate-200 focus:border-[#38bdf8] focus:outline-none"
                   >
                     <option value="all">Any Team Size</option>
                     <option value="solo">Solo / Individual</option>
@@ -328,7 +360,7 @@ export default function App() {
                   <select
                     value={filterFee}
                     onChange={(e) => setFilterFee(e.target.value as any)}
-                    className="rounded-lg border border-purple-500/30 bg-[#0c102a] px-3 py-1.5 text-xs text-slate-200 focus:border-cyan-400 focus:outline-none"
+                    className="rounded-full border border-[#273260] bg-[#0c1236] px-3.5 py-1.5 text-xs text-slate-200 focus:border-[#38bdf8] focus:outline-none"
                   >
                     <option value="all">Free & Paid</option>
                     <option value="free">Free Events Only</option>
@@ -337,26 +369,73 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Category Filter Buttons */}
-              <div className="mt-5 flex items-center gap-1.5 overflow-x-auto p-1 bg-[#0c102a]/80 border border-purple-500/20 rounded-xl">
+              {/* Track Selection Buttons: All, Technical, Non-Technical */}
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => {
+                    setSelectedTrack('all');
+                    setSelectedCategory('all');
+                  }}
+                  className={`rounded-full px-4 py-2 text-xs font-bold transition flex items-center gap-2 ${
+                    selectedTrack === 'all'
+                      ? 'bg-[#7c3aed] text-white shadow-[0_0_15px_rgba(124,58,237,0.5)]'
+                      : 'bg-[#0c1236] border border-[#273260] text-slate-300 hover:text-white'
+                  }`}
+                >
+                  <span>All Competitions</span>
+                  <span className="rounded-full bg-black/40 px-2 py-0.5 text-[10px] font-mono">13</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedTrack('technical');
+                    setSelectedCategory('all');
+                  }}
+                  className={`rounded-full px-4 py-2 text-xs font-bold transition flex items-center gap-2 ${
+                    selectedTrack === 'technical'
+                      ? 'bg-[#7c3aed] text-white shadow-[0_0_15px_rgba(124,58,237,0.5)]'
+                      : 'bg-[#0c1236] border border-[#273260] text-[#7dd3fc] hover:bg-[#151f50]'
+                  }`}
+                >
+                  <span className="h-2 w-2 rounded-full bg-[#38bdf8]" />
+                  <span>Technical & Workshops</span>
+                  <span className="rounded-full bg-black/40 px-2 py-0.5 text-[10px] font-mono">6</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedTrack('non-technical');
+                    setSelectedCategory('all');
+                  }}
+                  className={`rounded-full px-4 py-2 text-xs font-bold transition flex items-center gap-2 ${
+                    selectedTrack === 'non-technical'
+                      ? 'bg-[#7c3aed] text-white shadow-[0_0_15px_rgba(124,58,237,0.5)]'
+                      : 'bg-[#0c1236] border border-[#273260] text-[#c084fc] hover:bg-[#151f50]'
+                  }`}
+                >
+                  <span className="h-2 w-2 rounded-full bg-[#c084fc]" />
+                  <span>Non-Technical Events</span>
+                  <span className="rounded-full bg-black/40 px-2 py-0.5 text-[10px] font-mono">7</span>
+                </button>
+              </div>
+
+              {/* Category Filter Buttons in Midnight Navy Panel */}
+              <div className="mt-4 flex items-center gap-1.5 overflow-x-auto p-1 bg-[#090d28] border border-[#232c58] rounded-2xl">
                 {(
                   [
-                    { id: 'all', label: 'All Tracks' },
-                    { id: 'technical', label: 'Hackathons & Tech' },
-                    { id: 'cultural', label: 'Cultural & Bands' },
+                    { id: 'all', label: 'All Categories' },
+                    { id: 'technical', label: 'Code & Circuits' },
                     { id: 'workshops', label: 'Workshops & Robotics' },
-                    { id: 'sports', label: 'Sports Arena' },
+                    { id: 'cultural', label: 'Cultural & Bands' },
                     { id: 'gaming', label: 'Esports' },
-                    { id: 'management', label: 'E-Cell & Summits' },
+                    { id: 'management', label: 'E-Cell & Adzap' },
                   ] as const
                 ).map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setSelectedCategory(tab.id)}
-                    className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all whitespace-nowrap shrink-0 ${
+                    className={`px-3.5 py-1.5 text-xs font-bold rounded-full transition-all whitespace-nowrap shrink-0 ${
                       selectedCategory === tab.id
-                        ? 'bg-purple-600 text-white shadow-md glow-button'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                        ? 'bg-[#7c3aed] text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-[#131b45]'
                     }`}
                   >
                     {tab.label}
@@ -367,20 +446,24 @@ export default function App() {
               {/* Active Filter Indicators & Count */}
               <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
                 <span>
-                  Showing <strong className="text-cyan-400 font-mono">{filteredEvents.length}</strong> events
+                  Showing <strong className="text-[#00f0ff] font-mono">{filteredEvents.length}</strong> events
+                  {selectedTrack !== 'all' && (
+                    <span> in <strong className="capitalize text-[#00f0ff]">{selectedTrack}</strong> track</span>
+                  )}
                   {selectedCategory !== 'all' && (
-                    <span> in <strong className="capitalize text-purple-300">{selectedCategory}</strong></span>
+                    <span> under <strong className="capitalize text-[#a5f3fc]">{selectedCategory}</strong></span>
                   )}
                 </span>
-                {(searchQuery || selectedCategory !== 'all' || filterFormat !== 'all' || filterFee !== 'all') && (
+                {(searchQuery || selectedTrack !== 'all' || selectedCategory !== 'all' || filterFormat !== 'all' || filterFee !== 'all') && (
                   <button
                     onClick={() => {
                       setSearchQuery('');
+                      setSelectedTrack('all');
                       setSelectedCategory('all');
                       setFilterFormat('all');
                       setFilterFee('all');
                     }}
-                    className="font-medium text-cyan-400 hover:underline"
+                    className="font-bold text-[#00f0ff] hover:underline"
                   >
                     Reset all filters
                   </button>
@@ -389,7 +472,7 @@ export default function App() {
 
               {/* Event Cards Grid */}
               {filteredEvents.length === 0 ? (
-                <div className="mt-8 rounded-2xl border border-purple-500/20 bg-[#0c102a]/60 p-16 text-center">
+                <div className="mt-8 rounded-3xl border border-[#232c58] bg-[#090d28] p-16 text-center">
                   <h3 className="text-base font-bold text-white">
                     No competitions match your search
                   </h3>
@@ -399,16 +482,89 @@ export default function App() {
                   <button
                     onClick={() => {
                       setSearchQuery('');
+                      setSelectedTrack('all');
                       setSelectedCategory('all');
                       setFilterFormat('all');
                       setFilterFee('all');
                     }}
-                    className="mt-4 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white glow-button"
+                    className="mt-4 rounded-full bg-[#7c3aed] px-5 py-2 text-xs font-bold text-white hover:bg-[#8b5cf6] shadow-md transition"
                   >
                     Show All Competitions
                   </button>
                 </div>
+              ) : selectedTrack === 'all' && selectedCategory === 'all' && !searchQuery.trim() ? (
+                /* When showing all without search, group clearly into Technical and Non-Technical sections with titles */
+                <div className="mt-8 space-y-12">
+                  {/* Technical Events Block */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-[#1b2348] pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="h-3 w-3 rounded-full bg-[#38bdf8] shadow-[0_0_10px_#38bdf8] animate-pulse" />
+                        <h3 className="text-xl font-black text-white sm:text-2xl">
+                          Technical Events & Workshops
+                        </h3>
+                        <span className="text-xs font-mono font-bold text-[#38bdf8] bg-[#0c1638] border border-[#38bdf8]/40 px-2 py-0.5 rounded-full">
+                          6 Events
+                        </span>
+                      </div>
+                      <span className="text-xs text-[#bae6fd] hidden sm:inline font-medium">
+                        Hackathon · Circuit Design · Paper Presentation · Debugging · Quiz Competition · Workshop
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                      {filteredEvents
+                        .filter((ev) => ev.track === 'technical')
+                        .map((event) => (
+                          <EventCard
+                            key={event.id}
+                            event={event}
+                            onSelect={(ev) => setDetailEvent(ev)}
+                            onRegister={(ev) => setRegisterEvent(ev)}
+                            isBookmarked={bookmarks.includes(event.id)}
+                            onToggleBookmark={handleToggleBookmark}
+                            isRegistered={registeredEventIds.has(event.id)}
+                          />
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* Non-Technical Events Block */}
+                  <div className="space-y-4 pt-6 border-t border-[#1b2348]">
+                    <div className="flex items-center justify-between border-b border-[#1b2348] pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="h-3 w-3 rounded-full bg-[#c084fc] shadow-[0_0_10px_#c084fc] animate-pulse" />
+                        <h3 className="text-xl font-black text-white sm:text-2xl">
+                          Non-Technical Events
+                        </h3>
+                        <span className="text-xs font-mono font-bold text-[#c084fc] bg-[#1a0e33] border border-[#c084fc]/40 px-2 py-0.5 rounded-full">
+                          7 Events
+                        </span>
+                      </div>
+                      <span className="text-xs text-[#e9d5ff] hidden sm:inline font-medium">
+                        Cultural Fest · Gaming · Singing · Drawing · Adzap · Reel Making · Meme Creation
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                      {filteredEvents
+                        .filter((ev) => ev.track === 'non-technical')
+                        .map((event) => (
+                          <EventCard
+                            key={event.id}
+                            event={event}
+                            onSelect={(ev) => setDetailEvent(ev)}
+                            onRegister={(ev) => setRegisterEvent(ev)}
+                            isBookmarked={bookmarks.includes(event.id)}
+                            onToggleBookmark={handleToggleBookmark}
+                            isRegistered={registeredEventIds.has(event.id)}
+                          />
+                        ))}
+                    </div>
+                  </div>
+                </div>
               ) : (
+                /* Filtered Events Grid */
                 <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {filteredEvents.map((event) => (
                     <EventCard
@@ -428,7 +584,7 @@ export default function App() {
         )}
 
         {currentView === 'schedule' && (
-          <div className="bg-[#060814] text-slate-100 min-h-[70vh]">
+          <div className="bg-[#08080a] text-slate-100 min-h-[70vh]">
             <ScheduleView
               events={events}
               venues={venues}
@@ -439,7 +595,7 @@ export default function App() {
         )}
 
         {currentView === 'my-tickets' && (
-          <div className="bg-[#060814] text-slate-100 min-h-[70vh]">
+          <div className="bg-[#08080a] text-slate-100 min-h-[70vh]">
             <MyTicketsView
               registrations={registrations}
               onSelectRegistration={(reg) => setActiveDigitalPass(reg)}
@@ -453,7 +609,7 @@ export default function App() {
         )}
 
         {currentView === 'organizer' && (
-          <div className="bg-[#060814] text-slate-100 min-h-[70vh]">
+          <div className="bg-[#08080a] text-slate-100 min-h-[70vh]">
             <OrganizerPortal
               events={events}
               registrations={registrations}

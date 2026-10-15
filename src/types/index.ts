@@ -29,6 +29,7 @@ export interface EventItem {
   id: string;
   title: string;
   tagline: string;
+  track: 'technical' | 'non-technical';
   category: EventCategory;
   department: string;
   date: string;
@@ -57,6 +58,7 @@ export interface TeamMember {
   name: string;
   rollNumber: string;
   email: string;
+  phone?: string;
   role: string;
 }
 

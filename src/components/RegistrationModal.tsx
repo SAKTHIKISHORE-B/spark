@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Users, User, ArrowRight, ShieldCheck, Check, AlertCircle, Plus, Trash2 } from 'lucide-react';
+import { X, Users, User, ArrowRight, AlertCircle, Plus, Trash2, Phone, Mail } from 'lucide-react';
 import { EventItem, Registration, TeamMember } from '../types';
 
 interface RegistrationModalProps {
@@ -27,7 +27,7 @@ export function RegistrationModal({
   // Form states
   const [fullName, setFullName] = useState('');
   const [rollNumber, setRollNumber] = useState('');
-  const [college, setCollege] = useState('Institute of Technology & Science');
+  const [college, setCollege] = useState('Sona College of Technology');
   const [department, setDepartment] = useState('Computer Science & Eng.');
   const [year, setYear] = useState('3rd Year');
   const [email, setEmail] = useState('');
@@ -102,7 +102,7 @@ export function RegistrationModal({
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const generatedTicketId = `CP-26-${Math.floor(1000 + Math.random() * 9000)}`;
+      const generatedTicketId = `PP-26-${Math.floor(1000 + Math.random() * 9000)}`;
 
       const fullMembersList: TeamMember[] =
         participantType === 'team'
@@ -111,7 +111,8 @@ export function RegistrationModal({
                 name: fullName,
                 rollNumber,
                 email,
-                role: 'Team Leader',
+                phone,
+                role: 'Team Captain',
               },
               ...teamMembers,
             ]
@@ -151,23 +152,25 @@ export function RegistrationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl rounded-2xl bg-white shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#050816]/85 p-4 backdrop-blur-md">
+      {/* Midnight Navy Modal Card */}
+      <div className="relative w-full max-w-2xl rounded-3xl border border-[#232c58] bg-[#090d28] shadow-[0_0_60px_rgba(124,58,237,0.35)]">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[#1b2348] px-6 py-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-blue-700">
-              <span>Event Registration</span>
-              <span aria-hidden="true" className="text-slate-400">·</span>
-              <span className="capitalize">{event.category}</span>
+            <div className="flex items-center gap-2 text-xs font-bold text-[#38bdf8]">
+              <span>NEXORA 2026 · Sona College of Technology</span>
+              <span aria-hidden="true" className="text-slate-600">·</span>
+              <span className="capitalize text-[#a78bfa]">{event.category}</span>
             </div>
-            <h2 className="mt-0.5 text-lg font-bold text-slate-900 sm:text-xl">
-              {event.title}
+            {/* Pure White Bold Heading */}
+            <h2 className="mt-0.5 text-lg font-black text-white sm:text-xl">
+              {event.title} — Official Pass Registration
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition hover:bg-[#121a44] hover:text-[#38bdf8]"
           >
             <X className="h-5 w-5" />
           </button>
@@ -176,26 +179,39 @@ export function RegistrationModal({
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="max-h-[78vh] overflow-y-auto px-6 py-5">
           {errorMsg && (
-            <div className="mb-4 flex items-center gap-2 rounded-lg bg-red-50 p-3 text-xs font-medium text-red-700 border border-red-200">
+            <div className="mb-4 flex items-center gap-2 rounded-lg bg-red-950/40 p-3 text-xs font-bold text-red-400 border border-red-500/30">
               <AlertCircle className="h-4 w-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
+          {/* Helpdesk Notice */}
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[#232838] bg-[#0c0e14] px-3.5 py-2 text-[11px] text-slate-300">
+            <span className="text-slate-400">Need Registration Help?</span>
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1 font-mono text-[#a5f3fc]">
+                <Phone className="h-3 w-3 text-[#00f0ff]" /> 0000000XXX
+              </span>
+              <span className="flex items-center gap-1 font-mono text-[#a5f3fc]">
+                <Mail className="h-3 w-3 text-[#00f0ff]" /> xyz@gmail.com
+              </span>
+            </div>
+          </div>
+
           {/* Participation Mode Selection (if event allows both) */}
           {event.teamType === 'both' && (
             <div className="mb-5">
-              <label className="block text-xs font-semibold text-slate-700">
+              <label className="block text-xs font-bold text-white">
                 Participation Format
               </label>
               <div className="mt-1.5 grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setParticipantType('solo')}
-                  className={`flex items-center justify-center gap-2 rounded-lg border py-2 px-3 text-xs font-medium transition ${
+                  className={`flex items-center justify-center gap-2 rounded-lg border py-2 px-3 text-xs font-bold transition ${
                     participantType === 'solo'
-                      ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
-                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                      ? 'border-[#00f0ff] bg-[#00f0ff] text-[#08080a] shadow-sm'
+                      : 'border-[#232838] bg-[#141620] text-slate-300 hover:text-white'
                   }`}
                 >
                   <User className="h-4 w-4" />
@@ -204,14 +220,14 @@ export function RegistrationModal({
                 <button
                   type="button"
                   onClick={() => setParticipantType('team')}
-                  className={`flex items-center justify-center gap-2 rounded-lg border py-2 px-3 text-xs font-medium transition ${
+                  className={`flex items-center justify-center gap-2 rounded-lg border py-2 px-3 text-xs font-bold transition ${
                     participantType === 'team'
-                      ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
-                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                      ? 'border-[#00f0ff] bg-[#00f0ff] text-[#08080a] shadow-sm'
+                      : 'border-[#232838] bg-[#141620] text-slate-300 hover:text-white'
                   }`}
                 >
                   <Users className="h-4 w-4" />
-                  <span>Squad / Team ({event.minTeamSize}-{event.maxTeamSize} Members)</span>
+                  <span>Team ({event.minTeamSize}-{event.maxTeamSize} Members)</span>
                 </button>
               </div>
             </div>
@@ -219,13 +235,13 @@ export function RegistrationModal({
 
           {/* Section 1: Lead Participant / Contact Information */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#a5f3fc]">
               {participantType === 'team' ? '1. Team Lead / Primary Delegate' : '1. Participant Information'}
             </h4>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-medium text-slate-700">
+                <label className="block text-xs font-semibold text-slate-300">
                   Full Legal Name *
                 </label>
                 <input
@@ -234,12 +250,12 @@ export function RegistrationModal({
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Aarav Patel"
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-[#00f0ff] focus:outline-none focus:ring-1 focus:ring-[#00f0ff]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700">
+                <label className="block text-xs font-semibold text-slate-300">
                   Student Roll / College ID *
                 </label>
                 <input
@@ -248,15 +264,15 @@ export function RegistrationModal({
                   value={rollNumber}
                   onChange={(e) => setRollNumber(e.target.value)}
                   placeholder="e.g. 23CS108"
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-[#00f0ff] focus:outline-none focus:ring-1 focus:ring-[#00f0ff]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-medium text-slate-700">
-                  Email Address (For E-Pass & Updates) *
+                <label className="block text-xs font-semibold text-slate-300">
+                  Email Address (Pass Delivery) *
                 </label>
                 <input
                   type="email"
@@ -264,12 +280,12 @@ export function RegistrationModal({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@college.edu"
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-[#00f0ff] focus:outline-none focus:ring-1 focus:ring-[#00f0ff]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700">
+                <label className="block text-xs font-semibold text-slate-300">
                   Phone Number (WhatsApp verified) *
                 </label>
                 <input
@@ -278,20 +294,20 @@ export function RegistrationModal({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-[#00f0ff] focus:outline-none focus:ring-1 focus:ring-[#00f0ff]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="sm:col-span-1">
-                <label className="block text-xs font-medium text-slate-700">
+                <label className="block text-xs font-semibold text-slate-300">
                   Year of Study
                 </label>
                 <select
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white focus:border-[#00f0ff] focus:outline-none"
                 >
                   <option>1st Year</option>
                   <option>2nd Year</option>
@@ -302,7 +318,7 @@ export function RegistrationModal({
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-medium text-slate-700">
+                <label className="block text-xs font-semibold text-slate-300">
                   College / Institute Name *
                 </label>
                 <input
@@ -311,7 +327,7 @@ export function RegistrationModal({
                   value={college}
                   onChange={(e) => setCollege(e.target.value)}
                   placeholder="College or University"
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-[#00f0ff] focus:outline-none focus:ring-1 focus:ring-[#00f0ff]"
                 />
               </div>
             </div>
@@ -319,16 +335,16 @@ export function RegistrationModal({
 
           {/* Section 2: Team Roster (if team participation) */}
           {participantType === 'team' && (
-            <div className="mt-6 space-y-4 border-t border-slate-200 pt-5">
+            <div className="mt-6 space-y-4 border-t border-[#1f2433] pt-5">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#a5f3fc]">
                   2. Team Roster ({teamMembers.length + 1} of {event.maxTeamSize} max)
                 </h4>
                 {teamMembers.length + 1 < event.maxTeamSize && (
                   <button
                     type="button"
                     onClick={handleAddMember}
-                    className="flex items-center gap-1 text-xs font-semibold text-blue-700 hover:text-blue-800"
+                    className="flex items-center gap-1 text-xs font-bold text-[#00f0ff] hover:underline"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     <span>Add Teammate</span>
@@ -337,16 +353,16 @@ export function RegistrationModal({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700">
-                  Team Name *
+                <label className="block text-xs font-semibold text-slate-300">
+                  Team / Squad Name *
                 </label>
                 <input
                   type="text"
                   required
                   value={teamName}
                   onChange={(e) => setTeamName(e.target.value)}
-                  placeholder="e.g. Apex Innovators"
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  placeholder="e.g. Pixel Pirates Alpha"
+                  className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-[#00f0ff] focus:outline-none focus:ring-1 focus:ring-[#00f0ff]"
                 />
               </div>
 
@@ -355,17 +371,17 @@ export function RegistrationModal({
                 {teamMembers.map((member, idx) => (
                   <div
                     key={idx}
-                    className="rounded-lg border border-slate-200 bg-slate-50/50 p-3"
+                    className="rounded-lg border border-[#232838] bg-[#0c0e14] p-3"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-slate-700">
+                      <span className="text-xs font-bold text-white">
                         Teammate #{idx + 2}
                       </span>
                       {teamMembers.length > 1 && (
                         <button
                           type="button"
                           onClick={() => handleRemoveMember(idx)}
-                          className="text-xs text-red-600 hover:text-red-700"
+                          className="text-xs text-red-400 hover:text-red-300"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -380,7 +396,7 @@ export function RegistrationModal({
                           value={member.name}
                           onChange={(e) => handleMemberChange(idx, 'name', e.target.value)}
                           placeholder="Teammate Name *"
-                          className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
+                          className="w-full rounded-md border border-[#262c3e] bg-[#141620] px-2.5 py-1.5 text-xs text-white focus:border-[#00f0ff] focus:outline-none"
                         />
                       </div>
                       <div>
@@ -390,7 +406,7 @@ export function RegistrationModal({
                           value={member.rollNumber}
                           onChange={(e) => handleMemberChange(idx, 'rollNumber', e.target.value)}
                           placeholder="Roll Number *"
-                          className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
+                          className="w-full rounded-md border border-[#262c3e] bg-[#141620] px-2.5 py-1.5 text-xs text-white focus:border-[#00f0ff] focus:outline-none"
                         />
                       </div>
                       <div>
@@ -398,8 +414,8 @@ export function RegistrationModal({
                           type="text"
                           value={member.role}
                           onChange={(e) => handleMemberChange(idx, 'role', e.target.value)}
-                          placeholder="Role (e.g. Designer)"
-                          className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
+                          placeholder="Role (e.g. Lead Coder)"
+                          className="w-full rounded-md border border-[#262c3e] bg-[#141620] px-2.5 py-1.5 text-xs text-white focus:border-[#00f0ff] focus:outline-none"
                         />
                       </div>
                     </div>
@@ -409,43 +425,43 @@ export function RegistrationModal({
             </div>
           )}
 
-          {/* Section 3: Fee Breakdown & Campus Checkout */}
-          <div className="mt-6 space-y-4 border-t border-slate-200 pt-5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          {/* Section 3: Pass Summary */}
+          <div className="mt-6 space-y-4 border-t border-[#1f2433] pt-5">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#a5f3fc]">
               {participantType === 'team' ? '3. Pass Summary' : '2. Pass Summary'}
             </h4>
 
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div className="flex items-center justify-between text-xs text-slate-600">
+            <div className="rounded-xl border border-[#232838] bg-[#0c0e14] p-4">
+              <div className="flex items-center justify-between text-xs text-slate-400">
                 <span>Registration Entry Fee</span>
-                <span className="font-semibold text-slate-900">
+                <span className="font-bold text-white">
                   {event.fee === 0 ? 'Free Entry (Sponsored)' : `₹${event.fee}`}
                 </span>
               </div>
-              <div className="mt-1 flex items-center justify-between text-xs text-slate-600">
-                <span>Festival Kit & ID Badge</span>
-                <span className="font-semibold text-slate-900">Complimentary</span>
+              <div className="mt-1 flex items-center justify-between text-xs text-slate-400">
+                <span>Festival Kit & Digital Barcode Pass</span>
+                <span className="font-bold text-[#00f0ff]">Complimentary</span>
               </div>
-              <div className="mt-2 flex items-center justify-between border-t border-slate-200 pt-2 text-sm font-bold text-slate-900">
+              <div className="mt-2 flex items-center justify-between border-t border-[#1f2433] pt-2 text-sm font-bold text-white">
                 <span>Total Amount Due</span>
-                <span className="font-mono text-base tabular-nums">
+                <span className="font-mono text-base text-[#00f0ff] tabular-nums">
                   {event.fee === 0 ? '₹0.00' : `₹${event.fee}.00`}
                 </span>
               </div>
 
               {event.fee > 0 && (
-                <div className="mt-4 border-t border-slate-200 pt-3">
-                  <label className="block text-xs font-medium text-slate-700">
+                <div className="mt-4 border-t border-[#1f2433] pt-3">
+                  <label className="block text-xs font-semibold text-slate-300">
                     Payment Channel
                   </label>
                   <div className="mt-1.5 flex gap-2">
                     <button
                       type="button"
                       onClick={() => setPaymentMethod('upi')}
-                      className={`flex-1 rounded-lg border py-1.5 text-xs font-medium ${
+                      className={`flex-1 rounded-lg border py-1.5 text-xs font-bold ${
                         paymentMethod === 'upi'
-                          ? 'border-slate-900 bg-white text-slate-900 shadow-sm'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-100'
+                          ? 'border-[#00f0ff] bg-[#00f0ff] text-[#08080a]'
+                          : 'border-[#262c3e] text-slate-400 hover:text-white'
                       }`}
                     >
                       Instant UPI
@@ -453,10 +469,10 @@ export function RegistrationModal({
                     <button
                       type="button"
                       onClick={() => setPaymentMethod('college-id')}
-                      className={`flex-1 rounded-lg border py-1.5 text-xs font-medium ${
+                      className={`flex-1 rounded-lg border py-1.5 text-xs font-bold ${
                         paymentMethod === 'college-id'
-                          ? 'border-slate-900 bg-white text-slate-900 shadow-sm'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-100'
+                          ? 'border-[#00f0ff] bg-[#00f0ff] text-[#08080a]'
+                          : 'border-[#262c3e] text-slate-400 hover:text-white'
                       }`}
                     >
                       College ID Bill
@@ -468,8 +484,8 @@ export function RegistrationModal({
                       type="text"
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
-                      placeholder="Enter UPI ID (e.g. student@oksbi)"
-                      className="mt-2 w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-slate-900 focus:outline-none"
+                      placeholder="Enter UPI ID (e.g. pirate@okhdfcbank)"
+                      className="mt-2 w-full rounded-md border border-[#262c3e] bg-[#141620] px-2.5 py-1.5 text-xs text-white focus:border-[#00f0ff] focus:outline-none"
                     />
                   )}
                 </div>
@@ -478,39 +494,39 @@ export function RegistrationModal({
 
             {/* Optional Special Requirements */}
             <div>
-              <label className="block text-xs font-medium text-slate-700">
+              <label className="block text-xs font-semibold text-slate-300">
                 Special Requests or Dietary Requirements (Optional)
               </label>
               <input
                 type="text"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="e.g. Vegetarian food required, wheelchair ramp access needed"
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                placeholder="e.g. Vegetarian food required, laptop desk power outlet needed"
+                className="mt-1 w-full rounded-lg border border-[#262c3e] bg-[#0c0e14] px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-[#00f0ff] focus:outline-none focus:ring-1 focus:ring-[#00f0ff]"
               />
             </div>
           </div>
 
           {/* Action Footer */}
-          <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-200 pt-4">
+          <div className="mt-6 flex items-center justify-end gap-3 border-t border-[#1b2348] pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+              className="rounded-full border border-[#273260] bg-[#0c1236] px-5 py-2 text-xs font-bold text-slate-300 transition hover:text-white"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] px-6 py-2.5 text-xs font-bold text-white shadow-lg hover:from-[#8b5cf6] hover:to-[#7c3aed] hover:shadow-[0_0_20px_rgba(124,58,237,0.6)] transition disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? (
                 <span>Generating Digital Pass...</span>
               ) : (
                 <>
                   <span>Complete & Generate Pass</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 stroke-[2.5]" />
                 </>
               )}
             </button>
